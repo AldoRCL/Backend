@@ -1,14 +1,18 @@
- # OPERADORES DE ASIGNACION
- # = IGUAL
- x = 10
- # += INCREMENTO
- x += 1
- # -= DECREMENTO
- x -= 1
- # *= MLTIPLICADOR
- x *= 2
- # /= DIVIDENDO
- x /= 2
- # ** POTENCIA
- x **= 2
- print(x)
+# OPERADORES DE ASIGNACION
+# = igual
+x = 10
+# += incremento
+x += 1
+print(x)
+# -= decremento
+x -= 1
+print(x)
+# *= Multiplador
+x *= 2
+print(x)
+# /= dividendo
+x /= 2
+print(x)
+# **= Potencia
+x **= 2
+print(x)
