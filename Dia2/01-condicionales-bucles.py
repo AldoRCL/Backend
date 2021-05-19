@@ -110,4 +110,3 @@ nombre1 = input("Ingresa el primer nombre")
 nombre2 = input("Ingresa el segundo nombre")
 nombre3 = input("Ingresa el tercero nombre")
 
-while 
