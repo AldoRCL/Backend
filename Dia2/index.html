@@ -13,7 +13,15 @@
             console.log(respuesta.status);
         });
     fetch("http://127.0.0.1:5000/productos",{
-        method: "GET" 
+        method: "GET",
+        body: JSON.stringify({
+            cantidad: 80,
+            nombre: "Leche De almendras",
+            precio: 15.4
+        }), 
+        headers: {
+            "Content-Type": "application/json",
+        },
         }).then((respuesta) => {
             respuesta.json().then((json) => {
                 console.log(json);
