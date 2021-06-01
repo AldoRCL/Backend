@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "entorno_flask\\Scripts\\python.exe",
+    "python.pythonPath": "entorno_flask_orm\\Scripts\\python.exe",
     "liveServer.settings.port": 5501
 }
