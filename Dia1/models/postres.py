@@ -23,3 +23,18 @@ class PostreModel(base_de_datos.Model):
     def __init__(self, nombre, porcion):
         self.postreNombre= nombre
         self.postrePorcion= porcion
+    def __str__(self):
+        return "El nombre es %s" % self.postreNombre
+    def save(self):
+        base_de_datos.session.add(self)
+
+        base_de_datos.session.commit()
+
+        #base_de_datos.session.close()
+
+    def json(self):
+        return{
+            "postreid":self.postreId,
+            "postreNombre":self.postreNombre,
+            "psotrePorcion": self.postrePorcion
+        }

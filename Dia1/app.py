@@ -2,11 +2,9 @@ from flask import Flask, request
 # Para usar las variables declaradas en el archivo .env
 from dotenv import load_dotenv
 from os import environ
-
-from flask_sqlalchemy import model
 from Config.conexion_bd import base_de_datos
 from flask_restful import Api
-from controllers.postre import PostresController
+from controllers.postre import PostreController, PostresController
 from models.postres import PostreModel
 from models.preparacion import PreparacionModel
 from models.ingredientes import IngredienteModel
@@ -20,19 +18,30 @@ api = Api(app)
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#connection-uri-format
 # dialect://username:password@host:port/database
 app.config['SQLALCHEMY_DATABASE_URI'] = environ.get("DATABASE_URI")
+# si se establece en TRUE, Flask-SQLAlchemy rastreara las modificaciones de los objetos y lanzara señales . su valor predeterminado es None, igual habilita el tracking pero emite una advertencia que se dehabilitara de manera predeterminada en futuras versiones. esto consume memoria adicional y si no se va a utilizar es mejor desactivarlo (False)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
+# iniciar la bd, para darle las credenciales definidas en el config
 base_de_datos.init_app(app)
 
+# sirve para eliminar todas las tablas y limpiar la BD
+# esto se utiliza en fases tempranas del proyecto y antes de pasar a produccion si usamos la misma bd, para limpiar la informacion falsa
 
+# base_de_datos.drop_all(app=app)
+
+# crea todas las tablas definidas en los modelos en el proyecto
 base_de_datos.create_all(app=app)
+
+
 @app.route("/")
 def initial_controller():
     return {
         "message": "Bienvenido a mi API de RECETAS DE POSTRES 🎂"
     }
 
+
+# DEFINO LAS RUTAS USANDO FLASK RESTFUL
 api.add_resource(PostresController, "/postres")
+api.add_resource(PostreController, "/postres/<int:id>")
 
 if __name__ == '__main__':
     app.run(debug=True)
