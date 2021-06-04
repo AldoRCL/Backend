@@ -5,10 +5,9 @@ from os import environ
 from Config.conexion_bd import base_de_datos
 from flask_restful import Api
 from controllers.postre import BusquedaPostre, PostreController, PostresController
-from models.postres import PostreModel
-from models.preparacion import PreparacionModel
+from controllers.preparacion import PreparacionesController
 from models.ingredientes import IngredienteModel
-from models.receta import RecetaModel
+from models.postres import PostreModel
 
 load_dotenv()
 
@@ -43,5 +42,6 @@ def initial_controller():
 api.add_resource(PostresController, "/postres")
 api.add_resource(PostreController, "/postres/<int:id>")
 api.add_resource(BusquedaPostre,"/busqueda_postre")
+api.add_resource(PreparacionesController,"/preparaciones")
 if __name__ == '__main__':
     app.run(debug=True)
