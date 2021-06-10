@@ -7,11 +7,27 @@ from flask_restful import Api
 from controllers.postre import BusquedaPostre, PostreController, PostresController
 from controllers.preparacion import PreparacionesController
 from models.ingredientes import IngredienteModel
-from models.postres import PostreModel
+#from models.postres import PostreModel
+from models.receta import RecetaModel
+from controllers.ingrediente import IngredienteController, IngredientesController
+from flask_swagger_ui import get_swaggerui_blueprint
 
 load_dotenv()
 
+
+SWAGGER_RL = "/api/docs"#Sirve para indicar en que ruta (endpoint) se encontrara la documentacion
+API_URL = "/static/swagger.json"#Indica la ubicacion
+swagger_blueprint = get_swaggerui_blueprint(
+    SWAGGER_RL,
+    API_URL,
+    config = {
+        'app_name': "Reposteria Flask - Swagger Documentation"
+    }
+)
+
+
 app = Flask(__name__)
+app.register_blueprint(swagger_blueprint)
 api = Api(app)
 # https://docs.sqlalchemy.org/en/14/core/engines.html
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/#connection-uri-format
@@ -42,6 +58,10 @@ def initial_controller():
 api.add_resource(PostresController, "/postres")
 api.add_resource(PostreController, "/postres/<int:id>")
 api.add_resource(BusquedaPostre,"/busqueda_postre")
-api.add_resource(PreparacionesController,"/preparaciones")
+api.add_resource(PreparacionesController,"/preparaciones","/preparaciones/<int:postre_id>")
+
+api.add_resource(IngredientesController, "/ingredientes")
+api.add_resource(IngredienteController, "/ingredientes/<int:id>")
+
 if __name__ == '__main__':
     app.run(debug=True)
