@@ -1,4 +1,3 @@
-  
 from config.conexion_bd import base_de_datos
 from sqlalchemy import Column, types
 

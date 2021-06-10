@@ -17,7 +17,8 @@ def autenticador(username, password):
     # primero valido si hay un username y un password
     if username and password:
         # busco ese usuario en la bd segun su correo como username
-        usuario = base_de_datos.session.query(UsuarioModel).filter_by(usuarioCorreo=username).first()
+        usuario = base_de_datos.session.query(
+            UsuarioModel).filter_by(usuarioCorreo=username).first()
         # si hay el usuario
         if usuario:
             # valido su password
