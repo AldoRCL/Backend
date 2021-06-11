@@ -62,9 +62,13 @@ class MovimientosController(Resource):
             # strftime => conviente de una FECHA a un STRING
             fecha = datetime.strptime(data['fecha'], '%Y-%m-%d %H:%M:%S')
             # fecha_en_texto = fecha.strftime('%Y-%m-%d %H:%M:%S')
-
-            print(type(fecha))
-            return 'ok'
+            nuevoMovimiento = MovimientoModel(data['nombre'],data['monto'],fecha,data['imagen'],data['tipo'],current_identity.get('usuarioId'))
+            nuevoMovimiento.save()
+            return {
+                "success": True,
+                "message": "Movimiento registrado Exitosamente",
+                "content": nuevoMovimiento.json()
+            }
         except:
             return {
                 "success": False,
