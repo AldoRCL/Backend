@@ -1,2 +1,5 @@
 .env
 __pycache__/
+multimedia/*
+#Acpetar un archivo luego de excluir toda una carpeta
+!multimedia/notfound.png

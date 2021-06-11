@@ -1,15 +1,18 @@
-from flask import Flask, request
+from flask import Flask, request, send_file
 from flask_restful import Api
 from controllers.usuario import RegistroController
 from controllers.movimiento import MovimientosController
 from models.sesion import SesionModel
-from os import environ, path
+from os import environ, path, remove
 from dotenv import load_dotenv
 from config.conexion_bd import base_de_datos
 from flask_jwt import JWT
 from config.seguridad import autenticador, identificador
 from config.custom_jwt import manejo_error_JWT
 from datetime import timedelta
+#sirve para que el nombre dle archivo que manda el cliente de guardarte, lo valide y evite que se guarde con caracteres espaeciales que puedne malograr el funcionamiento de la api o guardar de una forma incorrecta
+from werkzeug.utils import secure_filename
+from uuid import uuid4
 load_dotenv()
 
 app = Flask(__name__)
@@ -26,7 +29,7 @@ app.config['JWT_AUTH_USERNAME_KEY'] = 'correo'
 app.config['JWT_AUTH_PASSWORD_KEY'] = 'pass'
 # Si estamos subiendo archivos, para poner un tope usaremos la variable MAX_CONTENT_LENGTH
 # 1 byte  * 1024 => 1Kb * 1024 => 1 Mb * 1024 => 1 Gb
-app.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024
+app.config['MAX_CONTENT_LENGTH'] = 5 * 1024 * 1024
 
 jsonwebtoken = JWT(app=app, authentication_handler=autenticador,
                    identity_handler=identificador)
@@ -37,7 +40,7 @@ base_de_datos.init_app(app)
 # base_de_datos.drop_all(app=app)
 base_de_datos.create_all(app=app)
 
-EXTENSIONES_PERMITIDAS = ['png', 'jpg', 'pdf']
+EXTENSIONES_PERMITIDAS = ['png', 'jpg', 'pdf','jpeg']
 
 
 def archivos_permitidos(filename):
@@ -58,10 +61,49 @@ def subir_archivo():
     # para saber el tipo de archivo
     print(archivo.mimetype)  # image/jpg image/png  application/vnd.rar
     if archivos_permitidos(archivo.filename):
-        archivo.save(path.join("multimedia", archivo.filename))
-        return 'ok'
+        # primero saco el formato del archivo
+        formato_archivo = archivo.filename.rsplit(".", 1)[-1]
+        # genero un uuid y le agrego la extension
+        nombre_archivo = str(uuid4())+'.'+formato_archivo
+        # aca validara que no existan caracteres especial que puedan romper el funcionamiento de mi api
+        nombre_archivo = secure_filename(nombre_archivo)
+        archivo.save(path.join("multimedia", nombre_archivo))
+        return {
+            "success": True,
+            "content": request.host_url+'media/'+nombre_archivo,
+            "message": "archivo registrado correctamente"
+        }
     else:
-        return 'archivo no permitido'
+        return {
+            "success": False,
+            "content": None,
+            "message": "Archivo no permitido"
+        },400
+
+@app.route("/media/<string:nombre>", methods=['GET'])
+def devolverArchivo(nombre):
+    try:
+        return send_file(path.join("multimedia", nombre))
+    except:
+        return send_file(path.join("multimedia", "not_found.jpeg")),404
+
+@app.route("/eliminarArchivo/<string:nombre>", methods=['DELETE'])
+def eliminar_archivo(nombre):
+
+    try:
+        remove(path.join("multimedia",nombre))
+        return{
+            "success":True,
+            "content":None,
+            "message":"Archivo eliminado exitosamente"
+        }
+    except:
+        return{
+            "success":False,
+            "content":None,
+            "message":"Archivo no encontrado"
+        },404
+
 
 
 api.add_resource(RegistroController, "/registro")
