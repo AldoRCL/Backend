@@ -1,5 +1,7 @@
 from datetime import date
 from django.utils.timezone import now
+from datetime import date
+
 from django.db import models
 
 # Create your models here.
@@ -44,6 +46,9 @@ class UsuarioModel(models.Model):
         verbose_name='Dni del Lector',
         help_text='Ingrese un dni valido'
     )
+
+    def __str__(self):
+        return self.usuarioNombre+' '+self.usuarioApellido
 
     class Meta:
         # permite pasar metadatos al padre desde el hijo (setear atributos)
@@ -101,6 +106,20 @@ class LibroModel(models.Model):
         verbose_name='Cantidad',
         default=0,
     )
+
+    # la fecha y hora actual cuando se cree el registro
+    createdAt = models.DateTimeField(
+        auto_now_add=True,
+        db_column='created_at',
+        null=False
+    )
+    # auto_now => hace que el valor de la columna tome la hora actual cada vez que se modifique un registro en la bd
+    updatedAt = models.DateTimeField(
+        auto_now=True,
+        db_column='updated_at'
+    )
+    deletedAt = models.DateTimeField(db_column='deleted_at', null=True)
+
     def __str__(self):
         return self.libroNombre
 
@@ -126,7 +145,7 @@ class PrestamoModel(models.Model):
         db_column='id'
     )
     prestamoFechaInicio = models.DateField(
-        default=now,
+        default=date.today,
         db_column='fecha_inicio',
         verbose_name='Fecha de inicio del prestamo',
     )
@@ -165,8 +184,6 @@ class PrestamoModel(models.Model):
         verbose_name='Libro',
         help_text='Seleccione el libro a prestar'
     )
-
-    
 
     class Meta:
         db_table = "prestamos"
