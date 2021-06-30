@@ -2,10 +2,11 @@ from typing import Tuple
 from django.db import models
 from cms.models import PedidoModel
 
+
 class ComprobanteModel(models.Model):
     TIPO_COMPROBANTE = [
-        (1,'BOLETA'),
-        (2,'FACTURA')
+        (1, 'BOLETA'),
+        (2, 'FACTURA')
     ]
     comprobanteId = models.AutoField(
         primary_key=True,
@@ -37,7 +38,7 @@ class ComprobanteModel(models.Model):
 
     comprobanteCDR = models.TextField(
         db_column='CDR',
-        null=False
+        null=True
     )
 
     comprobanteXML = models.TextField(
@@ -51,12 +52,12 @@ class ComprobanteModel(models.Model):
     )
 
     pedido = models.OneToOneField(
-        to =PedidoModel,
+        to=PedidoModel,
         db_column='pedido_id',
-        on_delete = models.CASCADE,
+        on_delete=models.CASCADE,
         unique=True,
-        #primary_key=True,#Crea una relacion fuerte
-        related_name='pedidoComprobante'
+        related_name='pedidoComprobantes'
     )
+
     class Meta:
         db_table = 'comprobantes'

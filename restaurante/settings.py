@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 from os import environ
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -113,15 +114,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -139,3 +140,16 @@ AUTH_USER_MODEL = 'cms.UsuarioModel'
 
 # sirve para mostrar y almacenar los archivos multimedia mediante la URL
 MEDIA_ROOT = BASE_DIR / 'media'
+#sirve para indicar la ruta para devolver todos los archivos multimedia almacenados en el backend
+MEDIA_URL = "/assets/"
+
+REST_FRAMEWORK ={
+    'DEFAULT_AUTHENTICATION_CLASES' : ['rest_framework_simplejwt.authentication.JWTAuthentication',]
+}
+#Sirve para configurar toda la libreria de JWT
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME':timedelta(hours=1),
+    'REFRESH_TOKEN_LIFETIME': timedelta(hours=5),
+    
+    'USER_ID_FIELD': 'usuarioId'
+}
